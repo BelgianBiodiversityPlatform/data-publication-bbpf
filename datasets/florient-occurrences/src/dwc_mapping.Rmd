@@ -1,6 +1,6 @@
 ---
 title: "Darwin Core Mapping"
-subtitle: "For: MICA - Muskrat and Coypu occurrences collected by UVW in The Netherlands"
+subtitle: "For: Florient - Wild plant occurrences"
 author: "Dimitri Brosens"
 date: "`r Sys.Date()`"
 output:
@@ -34,6 +34,8 @@ library(leaflet)        # coordinate transformation
 library(widgetframe)    # coordinate transformation
 library(sf)             # coordinate transformation
 library(lubridate)      # date transformation
+##library(ggmap)          # geocoding data
+library(tidygeocoder)   # geocoding
 ```
 
 # Read source data
@@ -46,9 +48,9 @@ some columns renamed to DwC term
 File exported to csv
 
 ```{r}
-#input_interim <- read_csv2(file = here:here("datasets", "mica-uvw-occurrences", "data", "raw", "2020_11_18_Vangstgegevens #muskus- en beverratten_NL_2019.csv"))  
+#input_interim <- read_csv2(file = here:here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))  
 
-input_interim <- read_csv2(file = here::here("datasets", "mica-uvw-occurrences", "data", "raw", "Vangstgegevens muskus- en beverratten_NL_2014-2018 en 2020.csv"))
+input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))
 ```
 
 Preview data:
@@ -72,6 +74,13 @@ input_interim %>% head(n = 5)
 ```
 
 # Georeference source data
+
+## geocoding the source data
+```{r}
+input_interim %<>% geocode(deelgemeente_of_dorp)
+
+```
+
 
 ## Lambert to Decimals
 
