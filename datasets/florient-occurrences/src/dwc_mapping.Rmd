@@ -81,85 +81,6 @@ input_interim %<>% geocode(deelgemeente_of_dorp)
 
 ```
 
-
-## Lambert to Decimals
-
-### Keep original x,Y as verbatimcoordinates
-
-We want to keep the original verbatim Coordinates
-The original X,Y will be used for creating decimalLatitude and decimalLongitude
-
-```{r}
-input_interim %<>% mutate(verbatimLongitude = Longitude) %>%
-                   mutate(verbatimLatitude = Latitude)
-```
-
-### Create a spacial dataframe
-
-Create spatial dataframe and define the CRS (31370 is Belgian Lambert 72)(crs = 28992 is the Dutch system used here)
-We indicate the x,y columns as coordinates and define the coordinate system
-
-```{r}
-input_interim = st_as_sf(input_interim, coords = c("Longitude","Latitude"), crs = 28992 , agr = "constant" )
-input_interim %>% head(n = 5)
-```
-
-## Transform the data in WGS84
-
-Now we transform the Lambert 72 in WGS84
-
-```{r}
-input_interim <- st_transform(input_interim, crs = 4326)
-input_interim %>% head(n = 5)
-```
-
-### Create a dataframe with column decimalLatitude & decimalLongitude
-
-In order to add the decimal coordinates into the original df we create an x_y dataframe
-
-```{r}
-x_y <- as.data.frame(st_coordinates(input_interim))
-x_y %>% head(n = 5)
-
-#write_csv(x_y, here::here("datasets", "mica-uvw-occurrences", "data", "interim/x_y.csv"), na = "")
-```
-
-# Create extra dataframe to work with 
-
-```{r}
-input_interim_df <- input_interim
-```
-
-# Remove geometry from dataframe 'input_interim_df'
-
-We remove all geometry from the spacial dataframe, to create a normal df
-
-```{r}
-##input_interim_df <- st_geometry(NULL)
-
-st_geometry(input_interim_df) <- NULL
-
-input_interim_df %>% head(n = 5)
-```
-
-### Bind columns x_y and input_interim_df
-
-Join both df's to have the decimalLat & Lon
-
-```{r}
-input_interim_df = bind_cols(input_interim_df,x_y, .id = NULL)
-
-input_interim_df %>% head(n = 5)
-```
-
-### Integrate x-y coordinates in original dataframe
-
-We can safely substitute input_interim 
-
-```{r}
-input_interim <- input_interim_df
-```
-
 # Occurrence core
 
 ## Pre-processing
@@ -173,7 +94,7 @@ occurrence <- input_interim
 ## Remove obsolete columns
 
 ```{r}
-#occurrence %<>% select(-c(kind_nl,day, month, year))
+occurrence %<>% select(-c(arrondissement_Van_Hoorebeke,hoofdgemeente))
 ```
 
 # Term mapping
@@ -206,7 +127,7 @@ occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1
 ### rightsHolder
 
 ```{r}
-occurrence %<>% mutate(rightsHolder = "Unie Van Waterschappen") # e.g. "INBO"
+occurrence %<>% mutate(rightsHolder = "Universiteit Gent") # e.g. "INBO"
 ```
 
 ### accessRights
@@ -218,19 +139,19 @@ occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use"
 ### datasetID
 
 ```{r}
-occurrence %<>% mutate(datasetID = "https://doi.org/10.15468/qjds4c")
+occurrence %<>% mutate(datasetID = "https://toComplete")
 ```
 
 ### institutionCode
 
 ```{r}
-occurrence %<>% mutate(institutionCode = "Unie Van Waterschappen") # e.g. "INBO"
+occurrence %<>% mutate(institutionCode = "UniversiteitGent") # e.g. "INBO"
 ```
 
 ### datasetName
 
 ```{r}
-occurrence %<>% mutate(datasetName = "MICA - Muskrat and Coypu occurrences collected by UVW in the Netherlands") # e.g. "Checklist of non-native freshwater fishes in Flanders, Belgium"
+occurrence %<>% mutate(datasetName = "Florient - a database on wild vascular plants in East Flanders in the beginning of the 19th century") # e.g. "Checklist of non-native freshwater fishes in Flanders, Belgium"
 ```
 
 The following terms contain information about the taxon:
