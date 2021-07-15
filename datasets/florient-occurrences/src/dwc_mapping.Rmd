@@ -108,50 +108,50 @@ Start with record-level terms which contain metadata about the dataset (which is
 ### type
 
 ```{r}
-occurrence %<>% mutate(type = "Event")
+occurrence %<>% mutate(dwc_type = "Event")
 ```
 
 ### language
 
 ```{r}
-occurrence %<>% mutate(language = "en") # e.g. "en"
+occurrence %<>% mutate(dwc_language = "en") # e.g. "en"
 ```
 
 ### license
 
 ```{r}
-occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/") 
+occurrence %<>% mutate(dwc_license = "http://creativecommons.org/publicdomain/zero/1.0/") 
 # e.g. "http://creativecommons.org/publicdomain/zero/1.0/"
 ```
 
 ### rightsHolder
 
 ```{r}
-occurrence %<>% mutate(rightsHolder = "Universiteit Gent") # e.g. "INBO"
+occurrence %<>% mutate(dwc_rightsHolder = "Ghent University") # e.g. "INBO"
 ```
 
 ### accessRights
 
 ```{r}
-occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use") 
+occurrence %<>% mutate(dwc_accessRights = "http://www.inbo.be/en/norms-for-data-use") 
 ```
 
 ### datasetID
 
 ```{r}
-occurrence %<>% mutate(datasetID = "https://toComplete")
+occurrence %<>% mutate(dwc_datasetID = "https://toComplete")
 ```
 
 ### institutionCode
 
 ```{r}
-occurrence %<>% mutate(institutionCode = "UniversiteitGent") # e.g. "INBO"
+occurrence %<>% mutate(dwc_institutionCode = "UGent") # e.g. "INBO"
 ```
 
 ### datasetName
 
 ```{r}
-occurrence %<>% mutate(datasetName = "Florient - a database on wild vascular plants in East Flanders in the beginning of the 19th century") # e.g. "Checklist of non-native freshwater fishes in Flanders, Belgium"
+occurrence %<>% mutate(dwc_datasetName = "Florient - a database on wild vascular plants in East Flanders in the beginning of the 19th century") # e.g. "Checklist of non-native freshwater fishes in Flanders, Belgium"
 ```
 
 The following terms contain information about the taxon:
@@ -159,7 +159,7 @@ The following terms contain information about the taxon:
 ### basisOfRecord
 
 ```{r}
-occurrence %<>% mutate(basisOfRecord = "HumanObservation")
+occurrence %<>% mutate(dwc_basisOfRecord = "HumanObservation")
 ```
 
 ### informationWithHeld
@@ -171,8 +171,9 @@ occurrence %<>% mutate(basisOfRecord = "HumanObservation")
 **This need to be fixed**
 
 ```{r}
-occurrence %<>% rename(occurrenceID = 'Id') 
-#                mutate(occurrenceID = str_c("UVW:", occurrenceID))
+occurrence %<>% mutate(row_id = row_number()) %>%
+                mutate(dwc_occurrenceID = str_c("UGENT:FLORIENT:OCC:", row_id))
+   
 ```
 
 ### recordedBy
