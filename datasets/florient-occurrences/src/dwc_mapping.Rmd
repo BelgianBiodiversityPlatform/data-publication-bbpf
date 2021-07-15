@@ -179,14 +179,11 @@ occurrence %<>% mutate(row_id = row_number()) %>%
 ### recordedBy
 
 ```{r}
-occurrence %<>% mutate(recordedBy = WaterAuthorityName)
+occurrence %<>% mutate(dwc_recordedBy = bron)
 ```
 
 ### individualCount
 
-```{r}
-occurrence %<>% rename(individualCount='NumberOfCatches') 
-```
 
 ### organismQuantity
 
@@ -194,25 +191,9 @@ occurrence %<>% rename(individualCount='NumberOfCatches')
 
 ### sex
 
-```{r}
-occurrence %<>% mutate(sex = recode(Gender,
-"Muskusrat" = "Muskusrat",
-                   "jong"  = "juvenile",
-                   "oud" = "adult",
-                   "Onbekend" = "",
-                                   ))
-```
 
 ### lifeStage
 
-```{r}
-occurrence %<>% mutate(lifeStage = recode(Age,
-"Muskusrat" = "Muskusrat",
-                   "moer"  = "female",
-                   "ram" = "male",
-                   "Onbekend" = "",
-                                   ))
-```
 
 ### behavior
 
@@ -229,33 +210,20 @@ occurrence %<>% mutate(lifeStage = recode(Age,
 ### eventDate
 
 ```{r}
-occurrence %<>% mutate(eventDate = dmy_hm(CreatedOn)) 
-```
-
-```{r}
-occurrence %<>% mutate(year = year(eventDate)) %<>%
-                mutate(month = month(eventDate)) %<>%
-                mutate(day = day(eventDate)) %<>%
-                mutate(eventDate = date(eventDate))
+occurrence %<>% mutate(dwc_eventDate = (periode)) 
 ```
 
 # Location
 
 ```{r}
-occurrence %<>% rename(decimalLongitude = X) %>%
-                rename(decimalLatitude = Y) %>%
-                mutate(geodeticDatum = "WGS84") %>%
-                mutate(coordinateUncertaintyInMeters = "30") %>%
-                mutate(verbatimCoordinateSystem = "Rijksdriehoekscoördinaten") %>%
-                mutate(countryCode = "NL")  %>%            
-                mutate(continent = "Europe")
+occurrence %<>% mutate(decimalLongitude = long) %>%
+                mutate(decimalLatitude = lat) %>%
+                mutate(dwc_geodeticDatum = "WGS84") 
 ```
 
 ```{r}
 head(occurrence, n = 5)
 occurrence %<>%
-   mutate(verbatimLongitude = round(verbatimLongitude, digits = 0 )) %>%
-   mutate(verbatimLatitude = round(verbatimLatitude, digits = 0)) %>%
    mutate(decimalLongitude = round(decimalLongitude, digits = 5)) %>%
    mutate(decimalLatitude = round(decimalLatitude, digits = 5))
 ```
@@ -263,21 +231,20 @@ occurrence %<>%
 ```{r}
 occurrence %<>%   
    mutate(decimalLatitude = as.character(format(decimalLatitude, nsmall = 5))) %>%
-   mutate(decimalLongitude = as.character(format(decimalLongitude, nsmall = 5))) %>%
-   mutate(verbatimLatitude = as.character(format(verbatimLatitude, nsmall = 0))) %>%
-   mutate(verbatimLongitude = as.character(format(verbatimLongitude, nsmall = 0)))
+   mutate(decimalLongitude = as.character(format(decimalLongitude, nsmall = 5))) 
+   
 ```
 
 ### continent
 
 ```{r}
-##occurrence %<>% mutate(continent = "Europe") # e.g. "Belgium = BE"
+occurrence %<>% mutate(dwc_continent = "Europe") # e.g. "Belgium = BE"
 ```
 
 ### countryCode
 
 ```{r}
-#occurrence %<>% mutate(countryCode = "NL") # e.g. "Belgium = BE"
+occurrence %<>% mutate(dwc_countryCode = "BE") # e.g. "Belgium = BE"
 ```
 
 ### municipality
@@ -285,21 +252,14 @@ occurrence %<>%
 municipality already in source file
 
 ```{r}
-#occurrence %<>%
-#  mutate(municipality = str_remove(municipality,"\\(BE\\)"))
+occurrence %<>%
+  mutate(dwc_municipality = deelgemeente_of_dorp)
 ```
 
 ### locationID
 
-```{r}
-occurrence %<>% mutate(locationID = SubAreaName)
-```
 
 ### verbatimCoordinates
-
-```{r}
-occurrence %<>% mutate(locationID = HourSquareName)
-```
 
 ### verbatimLatitude
 
@@ -307,15 +267,9 @@ occurrence %<>% mutate(locationID = HourSquareName)
 
 ### verbatimCoordinateSystem
 
-```{r}
-#occurrence %<>% mutate(verbatimcoordinatesystem = "Amersfoort/RD new") # 
-```
 
 ### verbatimSRS
 
-```{r}
-occurrence %<>% mutate(verbatimSRS = "EPSG:28992")
-```
 
 ### decimalLatitude
 
@@ -330,80 +284,45 @@ occurrence %<>% mutate(verbatimSRS = "EPSG:28992")
 ### identifiedBy
 
 ```{r}
-occurrence %<>% mutate(identifiedBy = WaterAuthorityName)
+occurrence %<>% mutate(dwc_identifiedBy = bron)
 ```
 
 ### scientificName 
 
 ```{r}
 head(occurrence, n=5)
-occurrence %<>% mutate(scientificName = recode(CatchTypeName
-                   , "Beverrat ram oud (>1jr)"  = "Myocastor coypus"
-                   , "Muskusrat" = "Ondatra zibethicus"
-                   , "Beverrat"  = "Myocastor coypus"
-                   , "Muskusrat ram oud (>1jr)" = "Ondatra zibethicus"
-                   , "Muskusrat ram jong (<1jr)" = "Ondatra zibethicus"
-                   , "Muskusrat moer oud (>1jr)" = "Ondatra zibethicus"
-                   , "Muskusrat moer jong (<1jr)" = "Ondatra zibethicus"
-                                       ))
+occurrence %<>% mutate(dwc_scientificName = Wetenschappelijke_naam)
 ```
 
 ### kingdom
 
 ```{r}
-occurrence %<>% mutate(kingdom = "Animalia")
+occurrence %<>% mutate(dwc_kingdom = "Plantae")
 ```
 
 ### scientificNameAuthorship
 
-```{r}
-occurrence %<>% mutate(scientificNameAuthorship = recode(CatchTypeName
-                  ,"Muskusrat" = "Linnaeus, 1766"
-                  ,"Beverrat"  = "Molina, 1782"
-                  ,"Beverrat ram oud (>1jr)"  = "Molina, 1782"
-                  ,"Muskusrat ram oud (>1jr)" = "Linnaeus, 1766"
-                  ,"Muskusrat ram jong (<1jr)" = "Linnaeus, 1766"
-                  ,"Muskusrat moer oud (>1jr)" = "Linnaeus, 1766"
-                  ,"Muskusrat moer jong (<1jr)" = "Linnaeus, 1766"
-                                       ))
-```
 
 ### verbatimScientificName
 
 ```{r}
-occurrence %<>% mutate(verbatimScientificName = recode(CatchTypeName
-                  , "Muskusrat" = "Muskusrat"
-                  , "Beverrat"  = "Beverrat"
-                  , "Beverrat ram oud (>1jr)"  =   "Beverrat"
-                  , "Muskusrat ram oud (>1jr)" =   "Muskusrat"
-                  , "Muskusrat ram jong (<1jr)" =  "Muskusrat"
-                  , "Muskusrat moer oud (>1jr)" =  "Muskusrat"
-                  , "Muskusrat moer jong (<1jr)" = "Muskusrat"
-                                       ))
+occurrence %<>% mutate(dwc_verbatimScientificName = Nederlandse_naam)
 ```
 
 # taxonRank
 
 ```{r}
-occurrence %<>% mutate(taxonRank = "species")
+occurrence %<>% mutate(dwc_taxonRank = "species")
 ```
 
 # nomenclaturalCode
 
 ```{r}
-occurrence %<>% mutate(nomenclaturalCode = "ICZN") # e.g. "ICZN"
+occurrence %<>% mutate(dwc_nomenclaturalCode = "ICBN") # e.g. "ICZN"
 ```
 
 ### occurrenceStatus
 
-```{r}
-occurrence %<>% 
-    ##select(individualCount) %>%
-    mutate(occurrenceStatus = case_when(individualCount > 0 ~ "present",
-                              individualCount == 0 ~ "absent"
-                                 )
-                                )
-```
 
 ## Post-processing
 
