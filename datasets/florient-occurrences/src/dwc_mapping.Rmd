@@ -38,6 +38,7 @@ library(lubridate)      # date transformation
 library(tidygeocoder)   # geocoding
 library(mapdata)
 library(BelgiumMaps.StatBel)
+
 ```
 
 # Read source data
@@ -83,15 +84,23 @@ input_interim %<>% geocode(deelgemeente_of_dorp)
 
 ```
 
+## save geocoded file
+
+```{r}
+write_csv(input_interim, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded.csv"), na = "")
+
+```
+
+
 # Occurrence core
+
+```{r}
+occurrence <- read_csv(file = here::here("datasets", "florient-occurrences", "data", "interim", "input_geocoded.csv"))
+```
+
 
 ## Pre-processing
 
-Create a dataframe occurrence data only 
-
-```{r}
-occurrence <- input_interim
-```
 
 ## Remove obsolete columns
 
@@ -202,7 +211,7 @@ occurrence %<>% mutate(dwc_recordedBy = bron)
 ### occurrenceRemarks
 
 ```{r}
-# occurrence %<>% rename(occurrenceRemarks = 'action_en')
+# occurrence %<>% mutate(occurrenceRemarks = 'action_en')
 ```
 
 ### samplingProtocol
@@ -327,30 +336,6 @@ occurrence %<>% mutate(dwc_nomenclaturalCode = "ICBN") # e.g. "ICZN"
 
 ## Plotting data on the map
 
-```{r}
-# Personalised ggplot2 theme
-theme_marine <- function(){
-  theme_bw() +
-    theme(axis.text = element_text(size = 16),
-          axis.title = element_text(size = 20),
-          axis.line.x = element_line(color="black"),
-          axis.line.y = element_line(color="black"),
-          panel.border = element_blank(),
-          panel.grid.major.x = element_blank(),
-          panel.grid.minor.x = element_blank(),
-          panel.grid.minor.y = element_blank(),
-          panel.grid.major.y = element_blank(),
-          plot.margin = unit(c(1, 1, 1, 1), units = , "cm"),
-          plot.title = element_text(size = 20),
-          legend.text = element_text(size = 12),
-          legend.title = element_blank(),
-          legend.position = c(0.9, 0.9),
-          legend.key = element_blank(),
-          legend.background = element_rect(color = "black",
-                                           fill = "transparent",
-                                           size = 2, linetype="blank"))
-}
-```
 
 
 
@@ -358,9 +343,22 @@ theme_marine <- function(){
 ## Post-processing
 
 ```{r}
-colnames(occurrence) <- str_remove(colnames(occurrence), "dwc_")
+
+occurrence %<>% select(starts_with("dwc_"))  
+
 
 ```
+
+```{r}
+colnames(occurrence) <- str_remove(colnames(occurrence), "dwc_")
+```
+
+```{r}
+head(occurrence, n = (5))
+```
+#visualize data
+
+
 
 Define the order of the output columns
 
@@ -386,7 +384,7 @@ occurrence %>% head()
 Save to CSV:
 
 ```{r}
-write_csv(occurrence, here::here("datasets/mica-uvw-occurrences", "data", "processed", "occurrence.csv"), na = "")
+write_csv(occurrence, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded.csv"), na = "")
 
 
 
