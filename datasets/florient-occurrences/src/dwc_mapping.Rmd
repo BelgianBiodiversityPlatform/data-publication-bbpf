@@ -36,6 +36,8 @@ library(sf)             # coordinate transformation
 library(lubridate)      # date transformation
 ##library(ggmap)          # geocoding data
 library(tidygeocoder)   # geocoding
+library(mapdata)
+library(BelgiumMaps.StatBel)
 ```
 
 # Read source data
@@ -323,13 +325,41 @@ occurrence %<>% mutate(dwc_nomenclaturalCode = "ICBN") # e.g. "ICZN"
 
 ### occurrenceStatus
 
+## Plotting data on the map
+
+```{r}
+# Personalised ggplot2 theme
+theme_marine <- function(){
+  theme_bw() +
+    theme(axis.text = element_text(size = 16),
+          axis.title = element_text(size = 20),
+          axis.line.x = element_line(color="black"),
+          axis.line.y = element_line(color="black"),
+          panel.border = element_blank(),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_blank(),
+          plot.margin = unit(c(1, 1, 1, 1), units = , "cm"),
+          plot.title = element_text(size = 20),
+          legend.text = element_text(size = 12),
+          legend.title = element_blank(),
+          legend.position = c(0.9, 0.9),
+          legend.key = element_blank(),
+          legend.background = element_rect(color = "black",
+                                           fill = "transparent",
+                                           size = 2, linetype="blank"))
+}
+```
+
+
+
 
 ## Post-processing
 
 ```{r}
 colnames(occurrence) <- str_remove(colnames(occurrence), "dwc_")
-occurrence %<>% select(-c(CatchTypeName, Gender, Age, HourSquareName, CreatedOn, year, month, day))  #remove collection columns
-          ##  rename(scientificName = verbatimScientificName) 
+
 ```
 
 Define the order of the output columns
