@@ -37,7 +37,7 @@ library(lubridate)      # date transformation
 ##library(ggmap)          # geocoding data
 library(tidygeocoder)   # geocoding
 library(mapdata)
-library(BelgiumMaps.StatBel)
+#library(BelgiumMaps.StatBel)
 
 ```
 
