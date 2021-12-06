@@ -53,7 +53,7 @@ File exported to csv
 ```{r}
 #input_interim <- read_csv2(file = here:here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))  
 
-input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))
+input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"),locale(encoding = "UTF-8"))
 ```
 
 Preview data:
@@ -79,14 +79,14 @@ input_interim %>% head(n = 5)
 # Georeference source data
 
 ## geocoding the source data
-```{r}
+```{r eval=FALSE, include=FALSE}
 input_interim %<>% geocode(deelgemeente_of_dorp)
 
 ```
 
 ## save geocoded file
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 write_csv(input_interim, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded.csv"), na = "")
 
 ```
@@ -190,7 +190,7 @@ occurrence %<>% mutate(row_id = row_number()) %>%
 ### recordedBy
 
 ```{r}
-occurrence %<>% mutate(dwc_recordedBy = bron)
+occurrence %<>% mutate(dwc_recordedBy = 'Charles Van Hoorebeke')
 ```
 
 ### individualCount
@@ -216,12 +216,16 @@ occurrence %<>% mutate(dwc_recordedBy = bron)
 
 ### samplingProtocol
 
+```{r}
+occurrence %<>% mutate(dwc_samplingProtocol = 'plant collecion')
+```
+
 ### samplingEffort
 
 ### eventDate
 
 ```{r}
-occurrence %<>% mutate(dwc_eventDate = (periode)) 
+occurrence %<>% mutate(dwc_eventDate = str_replace_all(periode, "-","/")) 
 ```
 
 # Location
