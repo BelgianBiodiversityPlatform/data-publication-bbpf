@@ -51,9 +51,9 @@ some columns renamed to DwC term
 File exported to csv
 
 ```{r}
-#input_interim <- read_csv2(file = here:here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))  
+#input_interim <- read_csv2(file = here:here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))  ",locale(encoding = "UTF-8")" --> no good?
 
-input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"),locale(encoding = "UTF-8"))
+input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))
 ```
 
 Preview data:
@@ -78,28 +78,39 @@ input_interim %>% head(n = 5)
 
 # Georeference source data
 
+
+
 ## geocoding the source data
+
+```{r}
+input_interim %<>% mutate(country = "Belgium")
+```
+
 ```{r eval=FALSE, include=FALSE}
-input_interim %<>% geocode(deelgemeente_of_dorp)
+input_interim %<>% geocode(city = deelgemeente_of_dorp , country = country)
 
 ```
 
 ## save geocoded file
 
 ```{r eval=FALSE, include=FALSE}
-write_csv(input_interim, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded.csv"), na = "")
-
+write_csv(input_interim, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded2.csv"), na = "")
 ```
 
 
 # Occurrence core
 
-```{r}
-occurrence <- read_csv(file = here::here("datasets", "florient-occurrences", "data", "interim", "input_geocoded.csv"))
+```{r eval=FALSE, include=FALSE}
+input_geocoded <- read_csv(file = here::here("datasets", "florient-occurrences", "data", "interim", "input_geocoded.csv"))
 ```
 
 
 ## Pre-processing
+
+```{r}
+occurrence <- input_geocoded
+```
+
 
 
 ## Remove obsolete columns
@@ -231,22 +242,22 @@ occurrence %<>% mutate(dwc_eventDate = str_replace_all(periode, "-","/"))
 # Location
 
 ```{r}
-occurrence %<>% mutate(decimalLongitude = long) %>%
-                mutate(decimalLatitude = lat) %>%
+occurrence %<>% mutate(dwc_decimalLongitude = long) %>%
+                mutate(dwc_decimalLatitude = lat) %>%
                 mutate(dwc_geodeticDatum = "WGS84") 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 head(occurrence, n = 5)
 occurrence %<>%
-   mutate(decimalLongitude = round(decimalLongitude, digits = 5)) %>%
-   mutate(decimalLatitude = round(decimalLatitude, digits = 5))
+   mutate(dwc_decimalLongitude = round(decimalLongitude, digits = 5)) %>%
+   mutate(dwc_decimalLatitude = round(decimalLatitude, digits = 5))
 ```
 
 ```{r}
 occurrence %<>%   
-   mutate(decimalLatitude = as.character(format(decimalLatitude, nsmall = 5))) %>%
-   mutate(decimalLongitude = as.character(format(decimalLongitude, nsmall = 5))) 
+   mutate(dwc_decimalLatitude = as.character(format(dwc_decimalLatitude, nsmall = 5))) %>%
+   mutate(dwc_decimalLongitude = as.character(format(dwc_decimalLongitude, nsmall = 5))) 
    
 ```
 
@@ -294,7 +305,16 @@ occurrence %<>%
 
 ### coordinateUncertaintyInMeters
 
+```{r}
+occurrence %<>% mutate(dwc_coordinateUncertaintyInMeters = '5000' )
+```
+
+
 ### georeferenceRemarks
+
+```{r}
+occurrence %<>% mutate(dwc_georeferenceRemarks = 'coordinate is generated based on municipality by tidyGeocoder in R' )
+```
 
 ### identifiedBy
 
@@ -338,6 +358,10 @@ occurrence %<>% mutate(dwc_nomenclaturalCode = "ICBN") # e.g. "ICZN"
 
 ### occurrenceStatus
 
+```{r}
+occurrence %<>% mutate(dwc_occurrenceStatus = "present") 
+```
+
 ## Plotting data on the map
 
 
@@ -366,7 +390,7 @@ head(occurrence, n = (5))
 
 Define the order of the output columns
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 col_order <- c( "type","language","license","rightsHolder","accessRights","datasetID"
                ,"institutionCode","datasetName","basisOfRecord","occurrenceID","recordedBy"
                ,"individualCount","occurrenceStatus","eventDate","locationID", "continent","countryCode"
@@ -388,7 +412,7 @@ occurrence %>% head()
 Save to CSV:
 
 ```{r}
-write_csv(occurrence, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded.csv"), na = "")
+write_csv(occurrence, here::here("datasets/florient-occurrences", "data", "processed", "occurrence.csv"), na = "")
 
 
 
