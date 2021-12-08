@@ -87,7 +87,7 @@ input_interim %<>% mutate(country = "Belgium")
 ```
 
 ```{r eval=FALSE, include=FALSE}
-input_interim %<>% geocode(city = deelgemeente_of_dorp , country = country)
+input_interim %<>% geocode(city = deelgemeente_of_dorp , country = country ,  method = "osm")
 
 ```
 
