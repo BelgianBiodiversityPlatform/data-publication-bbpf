@@ -36,3 +36,12 @@ vignettes/*.pdf
 rsconnect/
 
 *.csv
+
+# GIS
+
+*.gdb
+*.zip
+*.7z
+*.sqlite
+*.bak
+*.txt
