@@ -50,15 +50,17 @@ Obsolete columns removed
 some columns renamed to DwC term
 File exported to csv
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 #input_interim <- read_csv2(file = here:here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))  ",locale(encoding = "UTF-8")" --> no good?
 
-input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))
+#input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "raw", "florient.csv"))
+
+input_interim <- read_csv2(file = here::here("datasets", "florient-occurrences", "data", "interim", "florient_geocorrect.csv"))
 ```
 
 Preview data:
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 input_interim %>% head(n = 5)
 ```
 
@@ -85,22 +87,40 @@ input_interim %>% head(n = 5)
 ```{r}
 input_interim %<>% mutate(country = "Belgium")
 ```
+```{r}
+input_interim %<>% mutate(state = "East Flanders")
+```
 
-```{r eval=FALSE, include=FALSE}
-input_interim %<>% geocode(city = deelgemeente_of_dorp , country = country ,  method = "osm")
+```{r}
+input_interim %<>% mutate(municip2 = str_c (deelgemeente_of_dorp, sep = ", " , country))
 
 ```
+
+
+
+```{r eval=FALSE, include=FALSE}
+input_interim %<>% geocode(city = deelgemeente_of_dorp, country = country, state = state , method = 'osm', full_results = TRUE)
+
+```
+
+
+```{r eval=FALSE, include=FALSE}
+input_interim %<>% geocode(deelgemeente_of_dorp)
+
+```
+
+
 
 ## save geocoded file
 
 ```{r eval=FALSE, include=FALSE}
-write_csv(input_interim, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded2.csv"), na = "")
+write_csv(input_interim, here::here("datasets/florient-occurrences", "data", "interim", "input_geocoded.csv"), na = "")
 ```
 
 
 # Occurrence core
 
-```{r eval=FALSE, include=FALSE}
+```{r}
 input_geocoded <- read_csv(file = here::here("datasets", "florient-occurrences", "data", "interim", "input_geocoded.csv"))
 ```
 
@@ -161,7 +181,7 @@ occurrence %<>% mutate(dwc_accessRights = "http://www.inbo.be/en/norms-for-data-
 ### datasetID
 
 ```{r}
-occurrence %<>% mutate(dwc_datasetID = "https://toComplete")
+occurrence %<>% mutate(dwc_datasetID = "https://doi.org/10.15468/2zv874")
 ```
 
 ### institutionCode
@@ -341,7 +361,7 @@ occurrence %<>% mutate(dwc_kingdom = "Plantae")
 ### verbatimScientificName
 
 ```{r}
-occurrence %<>% mutate(dwc_verbatimScientificName = Nederlandse_naam)
+occurrence %<>% mutate(dwc_vernacularName = Nederlandse_naam)
 ```
 
 # taxonRank
