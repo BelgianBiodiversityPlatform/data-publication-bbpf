@@ -37,6 +37,8 @@ library(lubridate)      # date transformation
 ##library(ggmap)          # geocoding data
 library(tidygeocoder)   # geocoding
 library(mapdata)
+##library(ggmap)
+library(ggplot2)
 #library(BelgiumMaps.StatBel)
 
 ```
@@ -88,11 +90,23 @@ input_interim %>% head(n = 5)
 input_interim %<>% mutate(country = "Belgium")
 ```
 ```{r}
-input_interim %<>% mutate(state = "East Flanders")
+input_interim %<>% mutate(state = case_when( 
+                                     deelgemeente_of_dorp == 'Affligem'    ~  "Flemish Brabant"
+                                    ,deelgemeente_of_dorp == 'Lillo'       ~  "Antwerp"
+                                    ,deelgemeente_of_dorp == 'Asse'        ~  "Flemish Brabant"
+                                    ,deelgemeente_of_dorp == 'Amougies'    ~  "Henegouwen"
+                                    ,deelgemeente_of_dorp == 'Orroir'      ~  "Henegouwen"
+                                    ,deelgemeente_of_dorp == 'Rozenaken'   ~  "Henegouwen"
+                                    ,deelgemeente_of_dorp == 'Liedekerke'    ~  "Flemish Brabant"
+                                    ,deelgemeente_of_dorp == 'Zwijndrecht'    ~  "Antwerp"
+                                    ,deelgemeente_of_dorp == 'Burcht'        ~  "Antwerp"
+                                    ,deelgemeente_of_dorp == 'Sint-Amands'    ~  "Antwerp"
+                                    ,TRUE ~ "East-Flanders"
+                                    ))
 ```
 
 ```{r}
-input_interim %<>% mutate(municip2 = str_c (deelgemeente_of_dorp, sep = ", " , country))
+input_interim %<>% mutate(municip2 = str_c (deelgemeente_of_dorp, sep = ", " , country, state))
 
 ```
 
@@ -105,7 +119,7 @@ input_interim %<>% geocode(city = deelgemeente_of_dorp, country = country, state
 
 
 ```{r eval=FALSE, include=FALSE}
-input_interim %<>% geocode(deelgemeente_of_dorp)
+#input_interim %<>% geocode(deelgemeente_of_dorp)
 
 ```
 
@@ -435,5 +449,31 @@ Save to CSV:
 write_csv(occurrence, here::here("datasets/florient-occurrences", "data", "processed", "occurrence.csv"), na = "")
 
 
+```
+
+
+
+# make a map
+
+
+```{r}
+occurrence %<>% filter(occurrenceID != 'UGENT:FLORIENT:OCC:2604'
+                     , occurrenceID != 'UGENT:FLORIENT:OCC:7166')
+
+#occurrence %<>% filter(!is.na(decimalLatitude))
+
+#occurrence %<>% drop_na()
 
 ```
+```{r}
+
+occurrence_sf <- occurrence %>%
+  st_as_sf(coords = c("decimalLongitude", "decimalLatitude"), crs = 4326)
+
+
+```
+
+```{r}
+plot (occurrence_sf)
+```
+
