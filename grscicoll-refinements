@@ -1,0 +1,25 @@
+#GRSciColl refinements#
+
+##RBINS GRSciColl##
+
+###Refining values of DwC terms in already published datasets###
+
+GBIF recommended guidelines to optimise relevant data aggregation in GRSciColl collections and avoid issued flags: https://data-blog.gbif.org/post/grscicoll-flags/
+
+####collectionCode: INV-ENT --> INV-INS####
+
+Technical methods for these refinements via https://ipt.biodiversity.be/manage/: 
+* OpenRefine = possible for ds:
+	- Therevidae ds 
+	- Bees ds *
+	- Moths ds *
+	- MODIRISK:RBINS Diptera: Culicidae Collection (or alt. method w/ R)
+* Rscript + github
+	MODIRISK:RBINS Diptera: Culicidae Collection: possibly appropriate to keep track of adjustements in the ITG repo:
+	https://github.com/BelgianBiodiversityPlatform/data-publication-ITG/blob/master/datasets/modirisk-occurrences/scr/dwc_mapping_collections_patch_grscicoll.Rmd 
+* SQL db:
+	- Beetles
+	- Ants Chaco 
+	- Ants formidabel 
+	- African Mammalia 
+	- RMCA Metafro-Infosys - Xylarium
