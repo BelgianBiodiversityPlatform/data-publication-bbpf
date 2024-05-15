@@ -4,9 +4,9 @@
 
 ###Refining values of DwC terms in already published datasets###
 
-GBIF recommended guidelines to optimise relevant data aggregation in GRSciColl collections and avoid issued flags: https://data-blog.gbif.org/post/grscicoll-flags/
+GBIF recommended guidelines for specimen-related data records to optimise relevant data aggregation in GRSciColl collections and avoid issued flags: https://data-blog.gbif.org/post/grscicoll-flags/
 
-####collectionCode: INV-ENT --> INV-INS####
+####collectionCode: e.g. INV-ENT --> INV-INS####
 
 Technical methods for these refinements via https://ipt.biodiversity.be/manage/: 
 * OpenRefine = possible for ds:
@@ -20,6 +20,6 @@ Technical methods for these refinements via https://ipt.biodiversity.be/manage/:
 * SQL db:
 	- Beetles
 	- Ants Chaco 
-	- Ants formidabel 
-	- African Mammalia 
-	- RMCA Metafro-Infosys - Xylarium
+	- Ants formidabel (also change institutionCode: KBVE-SRBE --> RBINS)
+	- African Mammalia (collectionCode: Rodentia --> VER-MAM)
+	- RMCA Metafro-Infosys - Xylarium (just shorten the institutionCode into RMCA)
