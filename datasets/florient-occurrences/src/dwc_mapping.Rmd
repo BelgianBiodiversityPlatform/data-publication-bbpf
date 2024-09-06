@@ -204,6 +204,12 @@ occurrence %<>% mutate(dwc_datasetID = "https://doi.org/10.15468/2zv874")
 occurrence %<>% mutate(dwc_institutionCode = "UGent") # e.g. "INBO"
 ```
 
+### institutionID
+
+```{r}
+occurrence %<>% mutate(dwc_institutionID = "https://ror.org/00cv9y106") 
+```
+
 ### datasetName
 
 ```{r}
@@ -215,7 +221,7 @@ The following terms contain information about the taxon:
 ### basisOfRecord
 
 ```{r}
-occurrence %<>% mutate(dwc_basisOfRecord = "HumanObservation")
+occurrence %<>% mutate(dwc_basisOfRecord = "PreservedSpecimen")
 ```
 
 ### informationWithHeld
